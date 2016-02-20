@@ -24,7 +24,21 @@ def index():
 def start():
     data = bottle.request.json
 
-    # TODO: Do things with data
+    # THIS IS THE DATA WE RECEIVE: 
+    
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "advanced",
+    #     "turn": 0,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": [],
+    #     "walls": [],  // Advanced Only
+    #     "gold": []    // Advanced Only
+    # }
 
     return {
         'taunt': 'battlesnake-python!'
@@ -37,6 +51,27 @@ def move():
 
     # TODO: Do things with data
 
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "advanced",
+    #     "turn": 4,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": [
+    #         [1, 2], [9, 3], ...
+    #     ],
+    #     "walls": [    // Advanced Only
+    #         [2, 2]
+    #     ],
+    #     "gold": [     // Advanced Only
+    #         [5, 5]
+    #     ]
+    # }
+
     return {
         'move': 'north',
         'taunt': 'battlesnake-python!'
@@ -48,6 +83,27 @@ def end():
     data = bottle.request.json
 
     # TODO: Do things with data
+    
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "advanced",
+    #     "turn": 4,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": [
+    #         [1, 2], [9, 3], ...
+    #     ],
+    #     "walls": [    // Advanced Only
+    #         [2, 2]
+    #     ],
+    #     "gold": [     // Advanced Only
+    #         [5, 5]
+    #     ]
+    # }
 
     return {
         'taunt': 'battlesnake-python!'
