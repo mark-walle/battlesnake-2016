@@ -61,7 +61,6 @@ def move():
     move_decision = ['north', 'east', 'south', 'west']
 
     ourSnake = findSnake(data['snakes'])
-    
 
     #returns coordinates [x, y] of nearest food
     nearestFood = findNearestFood(ourSnake, data['food'])
@@ -72,7 +71,7 @@ def move():
         if direction in move_decision:
             move_decision.remove(direction)
     
-    #returns a list of blocked directions that won't run us into ourselves
+    #returns a list of directions blocked by self
     selfAvoidance = avoidSelf(ourSnake['coords'])
     for direction in selfAvoidance:
         if direction in move_decision:
@@ -98,7 +97,7 @@ def move():
 
     return {
         'move': move_decision[0],
-        'taunt': 'Y\'all bitches gonna get turned to stone!'
+        'taunt': 'Y\'all gonna get turned to stone!'
     }
     
 def findSnake(snakes):
@@ -110,7 +109,7 @@ def findSnake(snakes):
 # Distances are calculated by calculateDistance method below
 def findNearestFood(snake, foodList):
     if foodList == []:
-        return
+        return []
     
     nearestFood = foodList[0]
     headLocation = snake['coords'][0]
@@ -127,7 +126,7 @@ def findNearestFood(snake, foodList):
 # Output: integer distance between coords
 def calculateDistance(coord1, coord2):
     return abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
-
+    
 # Input: list of coordinates corresponding to snake position
 # Output: list of directions that are blocked by a wall
 def avoidWall(coordinates, height, width):
@@ -141,6 +140,7 @@ def avoidWall(coordinates, height, width):
         blockedDirections.append('north')
     if head[1] > height - 3:
         blockedDirections.append('south')
+        
     return blockedDirections
     
 # This is a snake object
@@ -161,22 +161,25 @@ def avoidWall(coordinates, height, width):
 # Output: list of blocked directions
 def avoidSelf(coordinates):
     blockedDirections = []
+    head = coordinates[0]
     
-    for body in coordinates[1:]:
-        if coordinates[0][0] == body[0]-1:
-            blockedDirections.append('east')
-        
-        if coordinates[0][0] == body[0]+1:
-            blockedDirections.append('west')
-        
-        if coordinates[0][1] == body[1]-1:
-            blockedDirections.append('north')
-        
-        if coordinates[0][1] == body[1]+1:
-            blockedDirections.append('south')
-        
-    return blockedDirections
+    # we know where the head is, let's check surrounding tiles and remove conflicts
+    
+    #algorithm:
+    # 1. create list of possible directions as a list of coords
+    # 2. iterate through body and check if body coords is in list
+    # 3. if it is in the list, add that direction to blockedDirections
 
+    neighbours = {  'north': [head[0], head[1]+1],
+                    'east': [head[0]+1, head[1]],
+                    'south': [head[0], head[1]-1],
+                    'west': [head[0]-1, head[1]]}
+    
+    for direction, neighbour in neighbours.items():
+        if neighbour in coordinates[1:]:
+            blockedDirections.append(direction)
+
+    return blockedDirections
 
 @bottle.post('/end')
 def end():
