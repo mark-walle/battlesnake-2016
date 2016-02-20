@@ -70,12 +70,14 @@ def move():
     #returns a list of blocked directions that won't run us into a wall
     wallAvoidance = avoidWall(ourSnake['coords'], data['height'], data['width'])
     for direction in wallAvoidance:
-        move_decision.remove(direction)
+        if direction in move_decision:
+            move_decision.remove(direction)
     
     #returns a list of blocked directions that won't run us into ourselves
     selfAvoidance = avoidSelf(ourSnake['coords'])
     for direction in selfAvoidance:
-        move_decision.remove(direction)
+        if direction in move_decision:
+            move_decision.remove(direction)
     
     # THIS IS THE DATA WE RECEIVE: 
     # {
@@ -142,7 +144,7 @@ def avoidWall(coordinates, height, width):
         blockedDirections.add('south')
     return blockedDirections
     
-# This is a snake object    
+# This is a snake object
 
 # {   "name": "Well Documented Snake",
 #     "status": "alive",
