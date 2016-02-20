@@ -24,7 +24,7 @@ def start():
     # THIS IS THE DATA WE RECEIVE: 
     # {
     #     "game": "hairy-cheese",
-    #     "mode": "advanced",
+    #     "mode": "classic",
     #     "turn": 0,
     #     "height": 20,
     #     "width": 30,
@@ -35,7 +35,7 @@ def start():
     # }
 
     return {
-        'taunt': 'battlesnake-python!'
+        'taunt': 'Medusa snake go!'
     }
 
 @bottle.post('/move')
@@ -46,7 +46,7 @@ def move():
     # THIS IS THE DATA WE RECEIVE: 
     # {
     #     "game": "hairy-cheese",
-    #     "mode": "advanced",
+    #     "mode": "classic",
     #     "turn": 4,
     #     "height": 20,
     #     "width": 30,
@@ -60,7 +60,7 @@ def move():
 
     return {
         'move': move_decision,
-        'taunt': 'battlesnake-python!'
+        'taunt': 'MEDUSA ATTACK!'
     }
 
 @bottle.post('/end')
@@ -70,7 +70,7 @@ def end():
     # THIS IS THE DATA WE RECEIVE: 
     # {
     #     "game": "hairy-cheese",
-    #     "mode": "advanced",
+    #     "mode": "classic",
     #     "turn": 4,
     #     "height": 20,
     #     "width": 30,
@@ -83,7 +83,7 @@ def end():
     # }
 
     return {
-        'taunt': 'battlesnake-python!'
+        'taunt': 'Good game all!'
     }
 
 # Expose WSGI app (so gunicorn can find it)
