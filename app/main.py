@@ -94,7 +94,7 @@ def move():
 
     return {
         'move': move_decision[0],
-        'taunt': 'MEDUSA ATTACK!'
+        'taunt': 'Y\'all bitches gonna get turned to stone!'
     }
     
 def findSnake(snakes):
