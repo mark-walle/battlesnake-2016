@@ -1,11 +1,9 @@
 import bottle
 import os
 
-
 @bottle.route('/static/<path:path>')
 def static(path):
     return bottle.static_file(path, root='static/')
-
 
 @bottle.get('/')
 def index():
@@ -15,44 +13,78 @@ def index():
     )
 
     return {
-        'color': 'red',
+        'color': 'green',
         'head': head_url
     }
-
 
 @bottle.post('/start')
 def start():
     data = bottle.request.json
 
-    # TODO: Do things with data
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "classic",
+    #     "turn": 0,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": []
+    # }
 
     return {
-        'taunt': 'battlesnake-python!'
+        'taunt': 'Medusa snake go!'
     }
-
 
 @bottle.post('/move')
 def move():
     data = bottle.request.json
+	move_decision = 'north'
 
-    # TODO: Do things with data
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "classic",
+    #     "turn": 4,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": [
+    #         [1, 2], [9, 3], ...
+    #     ]
+    # }
 
     return {
-        'move': 'north',
-        'taunt': 'battlesnake-python!'
+        'move': move_decision,
+        'taunt': 'MEDUSA ATTACK!'
     }
-
 
 @bottle.post('/end')
 def end():
     data = bottle.request.json
-
-    # TODO: Do things with data
+    
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "classic",
+    #     "turn": 4,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [
+    #         <Snake Object>, <Snake Object>, ...
+    #     ],
+    #     "food": [
+    #         [1, 2], [9, 3], ...
+    #     ]
+    # }
 
     return {
-        'taunt': 'battlesnake-python!'
+        'taunt': 'Good game all!'
     }
-
 
 # Expose WSGI app (so gunicorn can find it)
 application = bottle.default_app()
