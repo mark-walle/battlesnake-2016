@@ -91,6 +91,9 @@ def move():
     #         [1, 2], [9, 3], ...
     #     ]
     # }
+    
+    if move_decision == []:
+        move_decision = 'north'
 
     return {
         'move': move_decision[0],
@@ -105,11 +108,15 @@ def findSnake(snakes):
 # Return the coords [x, y] of where the nearest food is
 # Distances are calculated by calculateDistance method below
 def findNearestFood(snake, foodList):
+    if foodList == []
+        return
+    
     nearestFood = foodList[0]
     headLocation = snake['coords'][0]
     for food in foodList[1:]:
         if calculateDistance(food, headLocation) < calculateDistance(nearestFood, headLocation):
             nearestFood = food
+            
     return nearestFood
 
 # Calculate the distance between two coords [x1, y1], [x2, y2]
