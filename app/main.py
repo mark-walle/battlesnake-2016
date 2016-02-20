@@ -48,6 +48,7 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
+	move_decision = 'north'
 
     # TODO: Do things with data
 
@@ -73,7 +74,7 @@ def move():
     # }
 
     return {
-        'move': 'north',
+        'move': move_decision,
         'taunt': 'battlesnake-python!'
     }
 
