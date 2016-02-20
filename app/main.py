@@ -41,7 +41,7 @@ def start():
 @bottle.post('/move')
 def move():
     data = bottle.request.json
-	move_decision = 'north'
+    move_decision = 'north'
 
     # THIS IS THE DATA WE RECEIVE: 
     # {
