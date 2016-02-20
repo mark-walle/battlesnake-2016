@@ -2,7 +2,6 @@
 
 import bottle
 import os
-import math
 
     # snake object:
     #    "id": "1234-567890-123456-7890",
@@ -94,8 +93,8 @@ def move():
     #     ]
     # }
     
-    if move_decision == []:
-        move_decision = 'north'
+    if not move_decision:
+        move_decision = ['north']
 
     return {
         'move': move_decision[0],
@@ -127,7 +126,7 @@ def findNearestFood(snake, foodList):
 # Input: two coordinates as a list of [x, y]
 # Output: integer distance between coords
 def calculateDistance(coord1, coord2):
-    return math.abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
+    return abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
 
 # Input: list of coordinates corresponding to snake position
 # Output: list of directions that are blocked by a wall
@@ -135,13 +134,13 @@ def avoidWall(coordinates, height, width):
     blockedDirections = []
     head = coordinates[0]
     if head[0] < 3:
-        blockedDirections.add('west')
+        blockedDirections.append('west')
     if head[0] > width - 3:
-        blockedDirections.add('east')
+        blockedDirections.append('east')
     if head[1] < 3: 
-        blockedDirections.add('north')
+        blockedDirections.append('north')
     if head[1] > height - 3:
-        blockedDirections.add('south')
+        blockedDirections.append('south')
     return blockedDirections
     
 # This is a snake object
