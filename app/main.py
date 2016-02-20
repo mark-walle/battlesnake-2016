@@ -110,7 +110,7 @@ def findSnake(snakes):
 # Return the coords [x, y] of where the nearest food is
 # Distances are calculated by calculateDistance method below
 def findNearestFood(snake, foodList):
-    if foodList == []
+    if foodList == []:
         return
     
     nearestFood = foodList[0]
