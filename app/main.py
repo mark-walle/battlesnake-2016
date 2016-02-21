@@ -144,7 +144,7 @@ def calculateDistance(coord1, coord2):
 # Input: our data object, our snake object, coordinates of desired locatioin
 # Output: return TRUE if can move there, FALSE if cannot move there
 def verifyNeighbours(data, snake, coord):
-    return not isWall(data, coord) or not isSelf(snake, coord)
+    return not isWall(data, coord) and not isSelf(snake, coord)
 
 # Checks if the desired coordinate is a wall
 # Input: data object, coordinate
