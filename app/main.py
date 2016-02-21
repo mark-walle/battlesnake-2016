@@ -45,9 +45,7 @@ def start():
     #     "turn": 0,
     #     "height": 20,
     #     "width": 30,
-    #     "snakes": [
-    #         <Snake Object>, <Snake Object>, ...
-    #     ],
+    #     "snakes": [ <Snake Object>, <Snake Object>, ... ],
     #     "food": []
     # }
 
@@ -56,6 +54,18 @@ def start():
     }
     
 @bottle.post('/move')
+
+    # THIS IS THE DATA WE RECEIVE: 
+    # {
+    #     "game": "hairy-cheese",
+    #     "mode": "classic",
+    #     "turn": 4,
+    #     "height": 20,
+    #     "width": 30,
+    #     "snakes": [ <Snake Object>, <Snake Object>, ... ],
+    #     "food": [ [1, 2], [9, 3], ... ]
+    # }
+    
 def move():
     data = bottle.request.json
     move_decision = ['north', 'east', 'south', 'west']
@@ -76,6 +86,34 @@ def move():
 
     #returns coordinates [x, y] of nearest food
     nearestFood = findNearestFood(ourSnake, data['food'])
+    #find which directions take us closer to food
+    foodDirections = []
+    if nearestFood != []:
+        if nearestFood[0] < head[0]:
+            foodDirections.append('west')
+        if nearestFood[0] > head[0]:
+            foodDirections.append('east')
+        if nearestFood[1] > head[1]:
+            foodDirections.append('south')
+        if nearestFood[1] < head[1]:
+            foodDirections.append('north')
+    
+    #check if a direction that takes us closer to food is possible
+    for food in foodDirections:
+        if food in move_decision:
+            move_decision = [food]
+    
+    if not move_decision:
+        move_decision = ['north']
+    
+    taunts = {  'north': 'I am a leaf on the wind, see how I soar!',
+                'east': 'Y\'all gonna get turned to stone!',
+                'south': 'NINJA SNAKE',
+                'west': 'Go west young snake.'}
+    return {
+        'move': move_decision[0],
+        'taunt': taunts[move_decision[0]]
+    }
     
     #returns a list of blocked directions that won't run us into a wall
     # wallAvoidance = avoidWall(ourSnake['coords'], data['height'], data['width'])
@@ -88,29 +126,6 @@ def move():
     # for direction in selfAvoidance:
     #   if direction in move_decision:
     #       move_decision.remove(direction)
-    
-    # THIS IS THE DATA WE RECEIVE: 
-    # {
-    #     "game": "hairy-cheese",
-    #     "mode": "classic",
-    #     "turn": 4,
-    #     "height": 20,
-    #     "width": 30,
-    #     "snakes": [
-    #         <Snake Object>, <Snake Object>, ...
-    #     ],
-    #     "food": [
-    #         [1, 2], [9, 3], ...
-    #     ]
-    # }
-    
-    if not move_decision:
-        move_decision = ['north']
-
-    return {
-        'move': move_decision[0],
-        'taunt': 'Y\'all gonna get turned to stone!'
-    }
     
 # Input: list of snake objects
 # Output: snake object that is our snake
@@ -141,10 +156,10 @@ def findNearestFood(snake, foodList):
 def calculateDistance(coord1, coord2):
     return abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
 
-# Input: our data object, our snake object, coordinates of desired locatioin
+# Input: our data object, coordinates of desired locatioin
 # Output: return TRUE if can move there, FALSE if cannot move there
-def verifyNeighbours(data, snake, coord):
-    return not isWall(data, coord) and not isSelf(snake, coord)
+def verifyNeighbours(data, coord):
+    return not isWall(data, coord) and not isSnake(data, coord)
 
 # Checks if the desired coordinate is a wall
 # Input: data object, coordinate
@@ -159,10 +174,14 @@ def isWall(data, coord):
         return False
 
 # Checks if desired coordinate is own tail
-# Input: snake object, coordinate
+# Input: data object, coordinate
 # Output: returns TRUE if coordinate belongs to snake, FALSE else
-def isSelf(snake, coord):
-    return coord in snake['coords'][1:]
+def isSnake(data, coord):
+    for snake in data['snakes']:
+        if coord in snake['coords']:
+            return True
+    
+    return False
 
 # Input: list of coordinates corresponding to snake position
 # Output: list of directions that are blocked by a wall
@@ -179,7 +198,6 @@ def avoidWall(coordinates, height, width):
         blockedDirections.append('south')
         
     return blockedDirections
-
 
 # Input: list of coordinates corresponding to snake position
 # Output: list of blocked directions
@@ -209,21 +227,6 @@ def avoidSelf(coordinates):
 def end():
     data = bottle.request.json
     
-    # THIS IS THE DATA WE RECEIVE: 
-    # {
-    #     "game": "hairy-cheese",
-    #     "mode": "classic",
-    #     "turn": 4,
-    #     "height": 20,
-    #     "width": 30,
-    #     "snakes": [
-    #         <Snake Object>, <Snake Object>, ...
-    #     ],
-    #     "food": [
-    #         [1, 2], [9, 3], ...
-    #     ]
-    # }
-
     return {
         'taunt': 'Good game all!'
     }
