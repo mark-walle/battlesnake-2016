@@ -81,7 +81,7 @@ def move():
     # for each possible direction, check if moving there will cause collison
     # if so, remove it from the list
     for direction, coord in neighbours.items():
-        if not verifyNeighbours(data, ourSnake, coord):
+        if not verifyNeighbours(data, coord):
             move_decision.remove(direction)
 
     #returns coordinates [x, y] of nearest food
@@ -102,6 +102,7 @@ def move():
     for food in foodDirections:
         if food in move_decision:
             move_decision = [food]
+            break
     
     if not move_decision:
         move_decision = ['north']
