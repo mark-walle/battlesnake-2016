@@ -38,17 +38,6 @@ def index():
 def start():
     data = bottle.request.json
 
-    # THIS IS THE DATA WE RECEIVE: 
-    # {
-    #     "game": "hairy-cheese",
-    #     "mode": "classic",
-    #     "turn": 0,
-    #     "height": 20,
-    #     "width": 30,
-    #     "snakes": [ <Snake Object>, <Snake Object>, ... ],
-    #     "food": []
-    # }
-
     return {
         'taunt': 'Medusa snake go!'
     }
@@ -103,7 +92,7 @@ def move():
     
     taunts = {  'north': 'I am a leaf on the wind, see how I soar!',
                 'east': 'Y\'all gonna get turned to stone!',
-                'south': 'NINJA SNAKE',
+                'south': 'Snake head is coming for you',
                 'west': 'Go west young snake.'}
     return {
         'move': move_decision[0],
@@ -134,10 +123,7 @@ def findNearestFood(snake, foodList):
     return nearestFood
 
 # Calculate the distance between two coords [x1, y1], [x2, y2]
-# Because diagonal is not allowed, distance formula is 
-# deltaX + deltaY
 # Input: two coordinates as a list of [x, y]
-# Output: integer distance between coords
 def calculateDistance(coord1, coord2):
     return abs(coord1[0] - coord2[0]) + abs(coord1[1] - coord2[1])
 
@@ -147,8 +133,6 @@ def verifyNeighbours(data, coord):
     return not isWall(data, coord) and not isSnake(data, coord)
 
 # Checks if the desired coordinate is a wall
-# Input: data object, coordinate
-# Output: returns TRUE if coordinate is a wall, FALSE otherwise
 def isWall(data, coord):
     #check if coord is out of bounds
     if coord[0] < 0 or coord[1] < 0:
@@ -159,8 +143,6 @@ def isWall(data, coord):
         return False
 
 # Checks if desired coordinate is own tail
-# Input: data object, coordinate
-# Output: returns TRUE if coordinate belongs to snake, FALSE else
 def isSnake(data, coord):
     for snake in data['snakes']:
         if coord in snake['coords']:
