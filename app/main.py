@@ -152,11 +152,11 @@ def verifyNeighbours(data, snake, coord):
 def isWall(data, coord):
     #check if coord is out of bounds
     if coord[0] < 0 or coord[1] < 0:
-        return true
+        return True
     elif coord[0] >= data['width'] or coord[1] >= data['height']:
-        return true
+        return True
     else:
-        return false
+        return False
 
 # Checks if desired coordinate is own tail
 # Input: snake object, coordinate
