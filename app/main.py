@@ -62,6 +62,7 @@ def move():
 
     ourSnake = findSnake(data['snakes'])
     
+    head = ourSnake['coords'][0]
     neighbours = {  'north': [head[0], head[1]-1],
                     'east': [head[0]+1, head[1]],
                     'south': [head[0], head[1]+1],
