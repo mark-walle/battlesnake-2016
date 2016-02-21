@@ -123,9 +123,9 @@ def findNearestFood(snake, foodList):
     if foodList == []:
         return []
     
+    headLocation = snake['coords'][0]
     nearestFood = foodList[0]
     nearestDistance = calculateDistance(nearestFood, headLocation)
-    headLocation = snake['coords'][0]
     for food in foodList[1:]:
         if calculateDistance(food, headLocation) < nearestDistance:
             nearestFood = food
