@@ -87,23 +87,17 @@ def move():
     #returns coordinates [x, y] of nearest food
     nearestFood = findNearestFood(ourSnake, data['food'])
     #find which directions take us closer to food
-    foodDirections = []
+    
     if nearestFood != []:
-        if nearestFood[0] < head[0]:
-            foodDirections.append('west')
-        if nearestFood[0] > head[0]:
-            foodDirections.append('east')
-        if nearestFood[1] > head[1]:
-            foodDirections.append('south')
-        if nearestFood[1] < head[1]:
-            foodDirections.append('north')
-    
-    #check if a direction that takes us closer to food is possible
-    for food in foodDirections:
-        if food in move_decision:
-            move_decision = [food]
-            break
-    
+        if nearestFood[0] < head[0] and 'west' in move_decision:
+            move_decision = ['west']
+        if nearestFood[0] > head[0] and 'east' in move_decision:
+            move_decision = ['east']
+        if nearestFood[1] > head[1] and 'south' in move_decision:
+            move_decision = ['south']
+        if nearestFood[1] < head[1] and 'north' in move_decision:
+            move_decision = ['north']
+                
     if not move_decision:
         move_decision = ['north']
     
@@ -115,18 +109,6 @@ def move():
         'move': move_decision[0],
         'taunt': taunts[move_decision[0]]
     }
-    
-    #returns a list of blocked directions that won't run us into a wall
-    # wallAvoidance = avoidWall(ourSnake['coords'], data['height'], data['width'])
-    # for direction in wallAvoidance:
-    #   if direction in move_decision:
-    #       move_decision.remove(direction)
-    
-    #returns a list of directions blocked by self
-    # selfAvoidance = avoidSelf(ourSnake['coords'])
-    # for direction in selfAvoidance:
-    #   if direction in move_decision:
-    #       move_decision.remove(direction)
     
 # Input: list of snake objects
 # Output: snake object that is our snake
@@ -142,10 +124,12 @@ def findNearestFood(snake, foodList):
         return []
     
     nearestFood = foodList[0]
+    nearestDistance = calculateDistance(nearestFood, headLocation)
     headLocation = snake['coords'][0]
     for food in foodList[1:]:
-        if calculateDistance(food, headLocation) < calculateDistance(nearestFood, headLocation):
+        if calculateDistance(food, headLocation) < nearestDistance:
             nearestFood = food
+            nearestDistance = calculateDistance(nearestFood, headLocation)
             
     return nearestFood
 
@@ -155,7 +139,7 @@ def findNearestFood(snake, foodList):
 # Input: two coordinates as a list of [x, y]
 # Output: integer distance between coords
 def calculateDistance(coord1, coord2):
-    return abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
+    return abs(coord1[0] - coord2[0]) + abs(coord1[1] - coord2[1])
 
 # Input: our data object, coordinates of desired locatioin
 # Output: return TRUE if can move there, FALSE if cannot move there
@@ -183,46 +167,6 @@ def isSnake(data, coord):
             return True
     
     return False
-
-# Input: list of coordinates corresponding to snake position
-# Output: list of directions that are blocked by a wall
-def avoidWall(coordinates, height, width):
-    blockedDirections = []
-    head = coordinates[0]
-    if head[0] < 3:
-        blockedDirections.append('west')
-    if head[0] > width - 3:
-        blockedDirections.append('east')
-    if head[1] < 3: 
-        blockedDirections.append('north')
-    if head[1] > height - 3:
-        blockedDirections.append('south')
-        
-    return blockedDirections
-
-# Input: list of coordinates corresponding to snake position
-# Output: list of blocked directions
-def avoidSelf(coordinates):
-    blockedDirections = []
-    head = coordinates[0]
-    
-    # we know where the head is, let's check surrounding tiles and remove conflicts
-    
-    #algorithm:
-    # 1. create list of possible directions as a list of coords
-    # 2. iterate through body and check if body coords is in list
-    # 3. if it is in the list, add that direction to blockedDirections
-
-    neighbours = {  'north': [head[0], head[1]-1],
-                    'east': [head[0]+1, head[1]],
-                    'south': [head[0], head[1]+1],
-                    'west': [head[0]-1, head[1]]}
-    
-    for direction, neighbour in neighbours.items():
-        if neighbour in coordinates[1:]:
-            blockedDirections.append(direction)
-
-    return blockedDirections
 
 @bottle.post('/end')
 def end():
