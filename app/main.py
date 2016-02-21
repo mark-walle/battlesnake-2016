@@ -54,28 +54,39 @@ def start():
     return {
         'taunt': 'Medusa snake go!'
     }
-
+    
 @bottle.post('/move')
 def move():
     data = bottle.request.json
     move_decision = ['north', 'east', 'south', 'west']
 
     ourSnake = findSnake(data['snakes'])
+    
+    neighbours = {  'north': [head[0], head[1]-1],
+                    'east': [head[0]+1, head[1]],
+                    'south': [head[0], head[1]+1],
+                    'west': [head[0]-1, head[1]]}
+    
+    # for each possible direction, check if moving there will cause collison
+    # if so, remove it from the list
+    for direction, coord in neighbours.items():
+        if not verifyNeighbours(data, ourSnake, coord):
+            move_decision.remove(direction)
 
     #returns coordinates [x, y] of nearest food
     nearestFood = findNearestFood(ourSnake, data['food'])
     
     #returns a list of blocked directions that won't run us into a wall
-    wallAvoidance = avoidWall(ourSnake['coords'], data['height'], data['width'])
-    for direction in wallAvoidance:
-        if direction in move_decision:
-            move_decision.remove(direction)
+    # wallAvoidance = avoidWall(ourSnake['coords'], data['height'], data['width'])
+    # for direction in wallAvoidance:
+    #   if direction in move_decision:
+    #       move_decision.remove(direction)
     
     #returns a list of directions blocked by self
-    selfAvoidance = avoidSelf(ourSnake['coords'])
-    for direction in selfAvoidance:
-        if direction in move_decision:
-            move_decision.remove(direction)
+    # selfAvoidance = avoidSelf(ourSnake['coords'])
+    # for direction in selfAvoidance:
+    #   if direction in move_decision:
+    #       move_decision.remove(direction)
     
     # THIS IS THE DATA WE RECEIVE: 
     # {
@@ -100,6 +111,8 @@ def move():
         'taunt': 'Y\'all gonna get turned to stone!'
     }
     
+# Input: list of snake objects
+# Output: snake object that is our snake
 def findSnake(snakes):
     for snake in snakes:
         if snake['id'] == snakeid:
@@ -126,7 +139,30 @@ def findNearestFood(snake, foodList):
 # Output: integer distance between coords
 def calculateDistance(coord1, coord2):
     return abs( (coord1[0] - coord2[0]) + (coord1[1] - coord2[1]) )
-    
+
+# Input: our data object, our snake object, coordinates of desired locatioin
+# Output: return TRUE if can move there, FALSE if cannot move there
+def verifyNeighbours(data, snake, coord):
+    return not isWall(data, coord) or not isSelf(snake, coord)
+
+# Checks if the desired coordinate is a wall
+# Input: data object, coordinate
+# Output: returns TRUE if coordinate is a wall, FALSE otherwise
+def isWall(data, coord):
+    #check if coord is out of bounds
+    if coord[0] < 0 or coord[1] < 0:
+        return true
+    elif coord[0] >= data['width'] or coord[1] >= data['height']:
+        return true
+    else:
+        return false
+
+# Checks if desired coordinate is own tail
+# Input: snake object, coordinate
+# Output: returns TRUE if coordinate belongs to snake, FALSE else
+def isSelf(snake, coord):
+    return coord in snake['coords'][1:]
+
 # Input: list of coordinates corresponding to snake position
 # Output: list of directions that are blocked by a wall
 def avoidWall(coordinates, height, width):
@@ -142,20 +178,7 @@ def avoidWall(coordinates, height, width):
         blockedDirections.append('south')
         
     return blockedDirections
-    
-# This is a snake object
 
-# {   "name": "Well Documented Snake",
-#     "status": "alive",
-#     "message": "Moved north",
-#     "taunt": "Let's rock!",
-#     "age": 56,
-#     "health": 83,
-#     "coords": [ [1, 1], [1, 2], [2, 2] ],
-#     "kills": 4,
-#     "food": 12,
-#     "gold": 2
-# }
 
 # Input: list of coordinates corresponding to snake position
 # Output: list of blocked directions
@@ -170,9 +193,9 @@ def avoidSelf(coordinates):
     # 2. iterate through body and check if body coords is in list
     # 3. if it is in the list, add that direction to blockedDirections
 
-    neighbours = {  'north': [head[0], head[1]+1],
+    neighbours = {  'north': [head[0], head[1]-1],
                     'east': [head[0]+1, head[1]],
-                    'south': [head[0], head[1]-1],
+                    'south': [head[0], head[1]+1],
                     'west': [head[0]-1, head[1]]}
     
     for direction, neighbour in neighbours.items():
