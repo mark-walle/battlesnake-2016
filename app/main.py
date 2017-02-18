@@ -7,7 +7,7 @@ import os
     #    "id": "1234-567890-123456-7890",
     #    "name": "Well Documented Snake",
     #    "status": "alive",
-    #    "message": "Moved north",
+    #    "message": "Moved up",
     #    "taunt": "Let's rock!",
     #    "age": 56,
     #    "health": 83,
@@ -22,8 +22,10 @@ snakeid = 'f729b53e-3477-447d-b07e-c79d7e326c82'
 def static(path):
     return bottle.static_file(path, root='static/')
 
-@bottle.get('/')
-def index():
+@bottle.post('/start')
+def start():
+    data = bottle.request.json
+
     head_url = '%s://%s/static/head.png' % (
         bottle.request.urlparts.scheme,
         bottle.request.urlparts.netloc
@@ -31,14 +33,8 @@ def index():
 
     return {
         'color': 'green',
-        'head': head_url
-    }
-
-@bottle.post('/start')
-def start():
-    data = bottle.request.json
-
-    return {
+        'head': head_url,
+        'name': 'fartbox 9000',
         'taunt': 'Medusa snake go!'
     }
     
@@ -57,15 +53,15 @@ def start():
     
 def move():
     data = bottle.request.json
-    move_decision = ['north', 'east', 'south', 'west']
+    move_decision = ['up', 'right', 'down', 'left']
 
     ourSnake = findSnake(data['snakes'])
     
     head = ourSnake['coords'][0]
-    neighbours = {  'north': [head[0], head[1]-1],
-                    'east': [head[0]+1, head[1]],
-                    'south': [head[0], head[1]+1],
-                    'west': [head[0]-1, head[1]]}
+    neighbours = {  'up': [head[0], head[1]-1],
+                    'right': [head[0]+1, head[1]],
+                    'down': [head[0], head[1]+1],
+                    'left': [head[0]-1, head[1]]}
     
     # for each possible direction, check if moving there will cause collison
     # if so, remove it from the list
@@ -78,22 +74,22 @@ def move():
     #find which directions take us closer to food
     
     if nearestFood != []:
-        if nearestFood[0] < head[0] and 'west' in move_decision:
-            move_decision = ['west']
-        if nearestFood[0] > head[0] and 'east' in move_decision:
-            move_decision = ['east']
-        if nearestFood[1] > head[1] and 'south' in move_decision:
-            move_decision = ['south']
-        if nearestFood[1] < head[1] and 'north' in move_decision:
-            move_decision = ['north']
+        if nearestFood[0] < head[0] and 'left' in move_decision:
+            move_decision = ['left']
+        if nearestFood[0] > head[0] and 'right' in move_decision:
+            move_decision = ['right']
+        if nearestFood[1] > head[1] and 'down' in move_decision:
+            move_decision = ['down']
+        if nearestFood[1] < head[1] and 'up' in move_decision:
+            move_decision = ['up']
                 
     if not move_decision:
-        move_decision = ['north']
+        move_decision = ['up']
     
-    taunts = {  'north': 'I am a leaf on the wind, see how I soar!',
-                'east': 'Y\'all gonna get turned to stone!',
-                'south': 'Snake head is coming for you',
-                'west': 'Go west young snake.'}
+    taunts = {  'up': 'I am a leaf on the wind, see how I soar!',
+                'right': 'Y\'all gonna get turned to stone!',
+                'down': 'Snake head is coming for you',
+                'left': 'Go left young snake.'}
     return {
         'move': move_decision[0],
         'taunt': taunts[move_decision[0]]
