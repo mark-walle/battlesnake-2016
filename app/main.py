@@ -16,8 +16,6 @@ import os
     #    "food": 12,
     #    "gold": 2
 
-snakeid = 'f729b53e-3477-447d-b07e-c79d7e326c82'
-
 @bottle.route('/static/<path:path>')
 def static(path):
     return bottle.static_file(path, root='static/')
@@ -32,30 +30,51 @@ def start():
     )
 
     return {
-        'color': 'green',
+        'color': '#00FF00',
         'head': head_url,
         'name': 'fartbox 9000',
-        'taunt': 'Medusa snake go!'
+        'taunt': '{} ({}x{})'.format(game_id, board_width, board_height),
     }
     
-@bottle.post('/move')
+# {
+#   "you": "25229082-f0d7-4315-8c52-6b0ff23fb1fb",
+#   "width": 20,
+#   "turn": 0,
+#   "snakes": [
+#     {
+#       "taunt": "git gud",
+#       "name": "my-snake",
+#       "id": "25229082-f0d7-4315-8c52-6b0ff23fb1fb",
+#       "health_points": 93,
+#       "coords": [[0,0],[0,0],[0,0]]
+#     },
+#     {
+#       "taunt": "gotta go fast",
+#       "name": "other-snake",
+#       "id": "0fd33b05-37dd-419e-b44f-af9936a0a00c",
+#       "health_points": 50,
+#       "coords": [[1,0],[1,0],[1,0]]
+#     }
+#   ],  
+#   "height": 20,
+#   "game_id": "870d6d79-93bf-4941-8d9e-944bee131167",
+#   "food": [[1,1]],
+#   "dead_snakes": [{
+#       "taunt": "gotta go fast",
+#       "name": "other-snake",
+#       "id": "c4e48602-197e-40b2-80af-8f89ba005ee9",
+#       "health_points": 50,
+#       "coords": [[5,0],[5,0],[5,0]]
+#   }]
+# }
 
-    # THIS IS THE DATA WE RECEIVE: 
-    # {
-    #     "game": "hairy-cheese",
-    #     "mode": "classic",
-    #     "turn": 4,
-    #     "height": 20,
-    #     "width": 30,
-    #     "snakes": [ <Snake Object>, <Snake Object>, ... ],
-    #     "food": [ [1, 2], [9, 3], ... ]
-    # }
+@bottle.post('/move')
     
 def move():
     data = bottle.request.json
     move_decision = ['up', 'right', 'down', 'left']
 
-    ourSnake = findSnake(data['snakes'])
+    ourSnake = findSnake(data['snakes'],data['you'])
     
     head = ourSnake['coords'][0]
     neighbours = {  'up': [head[0], head[1]-1],
@@ -86,20 +105,16 @@ def move():
     if not move_decision:
         move_decision = ['up']
     
-    taunts = {  'up': 'I am a leaf on the wind, see how I soar!',
-                'right': 'Y\'all gonna get turned to stone!',
-                'down': 'Snake head is coming for you',
-                'left': 'Go left young snake.'}
     return {
         'move': move_decision[0],
-        'taunt': taunts[move_decision[0]]
+        'taunt': 'hi'
     }
     
 # Input: list of snake objects
 # Output: snake object that is our snake
-def findSnake(snakes):
+def findSnake(snakes,you):
     for snake in snakes:
-        if snake['id'] == snakeid:
+        if snake['id'] == you:
             return snake
 
 # Return the coords [x, y] of where the nearest food is
@@ -143,7 +158,6 @@ def isSnake(data, coord):
     for snake in data['snakes']:
         if coord in snake['coords']:
             return True
-    
     return False
 
 @bottle.post('/end')
